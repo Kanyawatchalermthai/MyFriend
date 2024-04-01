@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MYFRIENDS:)</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #FFDDC1; /* สีพื้นหลัง */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  .container {
+    max-width: 600px;
+    margin: 20px;
+    padding: 20px;
+    background-color: #ffffff; /* สีพื้นหลังคอนเทนเนอร์ */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  h1, h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #FF6B6B; /* สีข้อความหัวเรื่อง */
+  }
+  button {
+    display: block;
+    margin: 10px auto;
+    padding: 10px 20px;
+    background-color: #FF6B6B; /* สีปุ่ม */
+    color: #ffffff; /* สีข้อความปุ่ม */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  button:hover {
+    background-color: #FF8E8E; /* สีปุ่มเมื่อโฮเวอร์ */
+  }
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #FF6B6B; /* สีข้อความ Label */
+  }
+  input[type="text"],
+  input[type="number"] {
+    width: calc(100% - 20px);
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-sizing: border-box;
+    margin-left: 10px;
+  }
+  #output {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #FFD3B6; /* สีพื้นหลัง Output */
+    border-radius: 10px;
+    color: #FF6B6B; /* สีข้อความ Output */
+  }
+  #friendCountText {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #FF6B6B; /* สีข้อความ Number of Friends */
+  }
+  .emoji {
+    width: 50px;
+    height: auto;
+    margin: 10px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>MYFRIENDS:)</h1>
+  <div id="friendCountText">Number of Friends: <span id="friendCount">1</span></div>
+  <div>
+    <button onclick="generateRandomFriends()">Random</button>
+  </div>
+  <div id="friendInputs" style="display: none;">
+    <div id="friendInfo"></div>
+    <button onclick="calculateTotalAge()">Calculate Total Age</button>
+    <button onclick="calculateAverageAge()">Calculate Average Age</button>
+    <button onclick="findYoungestFriend()">Find Youngest Friend</button>
+    <button onclick="findOldestFriend()">Find Oldest Friend</button>
+  </div>
+  <div id="output"></div>
+  <button onclick="resetForm()">Reset</button>
+  <br>
+  <!-- เพิ่มซากุระอิโมจิ -->
+  <img src="https://emojicdn.elk.sh/🍣" alt="Sushi Emoji" class="emoji">
+  <img src="https://emojicdn.elk.sh/🍣" alt="Sushi Emoji" class="emoji">
+  <img src="https://emojicdn.elk.sh/🍣" alt="Sushi Emoji" class="emoji">
+</div>
+
+<script>
+  function generateRandomFriends() {
+    var friendCount = Math.floor(Math.random() * 9) + 1;
+    document.getElementById('friendCount').innerText = friendCount;
+    var friendInfoHTML = '';
+    for (var i = 1; i <= friendCount; i++) {
+      friendInfoHTML += '<div style="display: flex; flex-direction: row;">';
+      friendInfoHTML += '<label for="friendName' + i + '">Friend ' + i + ' nickname:</label>';
+      friendInfoHTML += '<input type="text" id="friendName' + i + '">';
+      friendInfoHTML += '<label for="friendAge' + i + '">Friend ' + i + ' age:</label>';
+      friendInfoHTML += '<input type="number" id="friendAge' + i + '">';
+      friendInfoHTML += '</div>';
+    }
+    document.getElementById('friendInfo').innerHTML = friendInfoHTML;
+    document.getElementById('friendInputs').style.display = 'block';
+  }
+
+  function validateFriendData() {
+    var friendInputs = document.querySelectorAll('#friendInfo input[type="text"], #friendInfo input[type="number"]');
+    for (var i = 0; i < friendInputs.length; i++) {
+      var friendInput = friendInputs[i];
+      if (friendInput.value.trim() === "") {
+        alert("Please fill in all friend names and ages.");
+        return false;
+      }
+    }
+    return true;
+  }
+
+  function calculateTotalAge() {
+    if (!validateFriendData()) return;
+    var friendCount = document.querySelectorAll('#friendInfo input[type="text"]').length;
+    var totalAge = 0;
+    for (var i = 1; i <= friendCount; i++) {
+      totalAge += parseInt(document.getElementById("friendAge" + i).value);
+    }
+    document.getElementById('output').innerHTML = 'Total age of all friends: ' + totalAge;
+  }
+
+  function calculateAverageAge() {
+    if (!validateFriendData()) return;
+    var friendCount = document.querySelectorAll('#friendInfo input[type="text"]').length;
+    var totalAge = 0;
+    for (var i = 1; i <= friendCount; i++) {
+      totalAge += parseInt(document.getElementById("friendAge" + i).value);
+    }
+    var averageAge = totalAge / friendCount;
+    document.getElementById('output').innerHTML = 'Average age of all friends: ' + averageAge.toFixed(2);
+  }
+
+  function findYoungestFriend() {
+    if (!validateFriendData()) return;
+    var friendCount = document.querySelectorAll('#friendInfo input[type="text"]').length;
+    var youngestAge = Infinity;
+    var youngestFriends = [];
+    for (var i = 1; i <= friendCount; i++) {
+      var friendAge = parseInt(document.getElementById("friendAge" + i).value);
+      if (friendAge < youngestAge) {
+        youngestAge = friendAge;
+        youngestFriends = [document.getElementById("friendName" + i).value];
+      } else if (friendAge === youngestAge) {
+        youngestFriends.push(document.getElementById("friendName" + i).value);
+      }
+    }
+    document.getElementById('output').innerHTML = 'Youngest friend is (age ' + youngestAge + '): ' + youngestFriends.join(', ');
+  }
+
+  function findOldestFriend() {
+    if (!validateFriendData()) return;
+    var friendCount = document.querySelectorAll('#friendInfo input[type="text"]').length;
+    var oldestAge = -Infinity;
+    var oldestFriends = [];
+    for (var i = 1; i <= friendCount; i++) {
+      var friendAge = parseInt(document.getElementById("friendAge" + i).value);
+      if (friendAge > oldestAge) {
+        oldestAge = friendAge;
+        oldestFriends = [document.getElementById("friendName" + i).value];
+      } else if (friendAge === oldestAge) {
+        oldestFriends.push(document.getElementById("friendName" + i).value);
+      }
+    }
+    document.getElementById('output').innerHTML = 'Oldest friend is (age ' + oldestAge + '): ' + oldestFriends.join(', ');
+  }
+  
+
+  function resetForm() {
+    document.getElementById("friendInputs").style.display = 'none';
+    document.getElementById("output").innerHTML = '';
+  }
+
+</script>
+
+</body>
+</html>
